@@ -15,20 +15,19 @@ COLOR_WHITE = (255, 255, 255)
 COLOR_BLACK = (0, 0, 0)
 
 surface = pygame.display.set_mode((CANVAS_WIDTH, CANVAS_HEIGHT))
-
 surface.fill(COLOR_WHITE)
-
 font = pygame.font.Font(None, 25)
 pygame.display.update()
-
 clock = pygame.time.Clock()
-player = Player(0,0, RESOLUTION, CANVAS_WIDTH, CANVAS_HEIGHT)
-apple = Apple(RESOLUTION, CANVAS_WIDTH, CANVAS_HEIGHT)
-apple.move_to_random_position()
 
 def main():
+    player = Player(0,0, RESOLUTION, CANVAS_WIDTH, CANVAS_HEIGHT)
+    apple = Apple(RESOLUTION, CANVAS_WIDTH, CANVAS_HEIGHT)
+    apple.move_to_random_position()
+    high_score = 1
     running = True
     frame_counter = 0
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -60,12 +59,14 @@ def main():
             player.draw(pygame, surface)
             apple.draw(pygame, surface)
 
-            score = font.render("Score: {}".format(int(player.length)), True, COLOR_BLACK)
+            score = font.render("High score: {} - Score: {}".format(int(high_score), int(player.length)), True, COLOR_BLACK)
 
             surface.blit(score, (CANVAS_WIDTH - score.get_width() - 10, 10))
             pygame.display.flip()
         else:
-            running = False
+            if high_score < player.length:
+                high_score = player.length
+            player = Player(0, 0, RESOLUTION, CANVAS_WIDTH, CANVAS_HEIGHT)
         
         frame_counter = frame_counter + 1
         clock.tick(60)
